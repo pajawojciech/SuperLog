@@ -1,0 +1,1 @@
+type SuperLogExtension.min.cs | clip

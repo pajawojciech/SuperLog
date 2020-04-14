@@ -1,14 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CodeSnippets
-    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
-    <CodeSnippet Format="1.0.0">
-        <Header>
-            <Title>SuperLog</Title>
-        </Header>
-        <Snippet>
-            <Code Language="CSharp">
-                <![CDATA[//LOG
-    //LOG
+//LOG
     public static class SuperLogExtension
     {
 #if (true) // core?
@@ -18,8 +8,3 @@
 #endif
         public static object log(this object t, string s = "") { tr(t, 0, s); return t; }
     }//END
-				]]>
-            </Code>
-        </Snippet>
-    </CodeSnippet>
-</CodeSnippets>
