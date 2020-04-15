@@ -1,6 +1,6 @@
-public static class SuperLogExtension
+public static class SuperLogExtension /*v17*/
 {
-    private static void tr(object t, int i = 0, string s = "") /*v15.1*/
+    private static void tr(object t, int i = 0, string s = "")
     {
         System.Action<string> ts = (string st) =>
         {

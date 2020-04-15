@@ -1,0 +1,1 @@
+ dotnet.exe .\Minifier\Minifier.dll .\SuperLogExtension.cs
