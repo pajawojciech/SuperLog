@@ -58,14 +58,41 @@ public static class SuperLogExtension /*v17*/
                 foreach (System.Data.SqlClient.SqlParameter p in sqlc.Parameters)
                 {
                     sql += "Declare " + p.ParameterName;
-                    if (p.SqlDbType.ToString() == "Int")
+                    if (p.SqlDbType.ToString() == "VarChar" || p.SqlDbType.ToString() == "NVarChar")
                     {
-                        sql += " Int = " + p.Value as string + "\n";
+                        sql += " " + p.SqlDbType.ToString() + "(" + p.Size + ") = '" + (p.Value as string).Replace("'", "''") + "' \n";
+                    }
+                    else if (p.SqlDbType.ToString() == "Decimal")
+                    {
+                        sql += " " + p.SqlDbType.ToString() + "(" + p.Precision + "," + p.Scale + ") = '" + p.Value.ToString().Replace(",", ".") + "' \n";
+                    }
+                    else if (new string[] { "Date", "DateTime", "DateTime2" }.Contains(p.SqlDbType.ToString()))
+                    {
+                        sql += " " + p.SqlDbType.ToString() + " = '";
+                        if (p.Value is DateTime)
+                        {
+                            if (p.SqlDbType.ToString() == "Date")
+                            {
+                                sql += ((DateTime)p.Value).ToString("yyyy-MM-dd");
+                            }
+                            else if (p.SqlDbType.ToString() == "DateTime")
+                            {
+                                sql += ((DateTime)p.Value).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                            }
+                            else if (p.SqlDbType.ToString() == "DateTime2")
+                            {
+                                sql += ((DateTime)p.Value).ToString("yyyy-MM-dd HH:mm:ss.fffffff");
+                            }
+                        }
+                        else
+                        {
+                            sql += p.Value.ToString();
+                        }
+                        sql += "' \n";
                     }
                     else
                     {
-                        sql += " VarChar(" + p.Size + ") = '" + (p.Value as string).Replace("'", "''") + "' ";
-                        sql += (p.SqlDbType.ToString() != "VarChar" ? "\t--" + p.SqlDbType : "") + "\n";
+                        sql += " " + p.SqlDbType.ToString() + " = '" + p.Value.ToString() + "' \n";
                     }
                 }
                 sql += sqlc.CommandText;
