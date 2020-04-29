@@ -253,7 +253,7 @@ public static class SuperLogExtension /*v18.1*/
                     sb.Append(',');
                 }
                 object x = prop.GetValue(y);
-                if (x is null)
+                if (x == null)
                 {
                     sb.Append("NULL");
                 }
