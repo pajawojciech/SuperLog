@@ -1,4 +1,4 @@
-public static class SuperLogExtension /*v18.1*/
+public static class SuperLogExtension /*v18.2*/
 {
     private static System.Action<string> ts = (string st) =>
     {
@@ -91,6 +91,47 @@ public static class SuperLogExtension /*v18.1*/
                             sql += p.Value.ToString();
                         }
                         sql += "' \n";
+                    }
+                    else if (p.SqlDbType.ToString() == "Structured")
+                    {
+                        sql += " " + p.TypeName + "\n";
+                        if (p.Value is System.Data.DataTable)
+                        {
+                            System.Data.DataTable dt = (System.Data.DataTable)p.Value;
+                            sql += "INSERT INTO " + p.ParameterName + " (";
+                            bool first = true;
+                            foreach (System.Data.DataColumn x in dt.Columns)
+                            {
+                                if (!first) sql += ",";
+                                sql += x.ColumnName;
+                                first = false;
+                            }
+                            sql += ") VALUES \n";
+                            first = true;
+                            foreach (System.Data.DataRow dr in dt.Rows)
+                            {
+                                sql += first ? "" : ",";
+                                first = false;
+                                sql += "(";
+                                for (int l = 0; l < dt.Columns.Count; l++)
+                                {
+                                    sql += (l != 0) ? ", " : "";
+                                    if (dt.Columns[l].DataType.Name == "Decimal")
+                                    {
+                                        sql += dr[l].ToString().Replace(",", ".");
+                                    }
+                                    else if (dt.Columns[l].DataType.Name == "DateTime")
+                                    {
+                                        sql += "'" + ((DateTime)dr[l]).ToString("yyyy-MM-dd HH:mm:ss.fff") + "'";
+                                    }
+                                    else
+                                    {
+                                        sql += "'" + dr[l].ToString() + "'";
+                                    }
+                                }
+                                sql += ")\n";
+                            }
+                        }
                     }
                     else
                     {
